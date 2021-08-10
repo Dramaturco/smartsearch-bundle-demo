@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <title>SmartSearch</title>
+    
+    <!-- Meta -->
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    
+    <!-- Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet"> 
+    <link rel='stylesheet' type='text/css' media='screen' href='../main.css'>
+    
+    <!-- Scripts -->
+    <script src='../config/env.js'></script>
+    <script src='../lib/smartsearch.bundle.js'></script>
+    <script>
+        const smartSearchOptions = {
+            autocompleteOptions: {
+                highlight: true,
+                language: "en",
+                prefixThreshold: 3
+            }
+        }
+        const fsss = new SmartSearch(window._env_.smartsearchURL, window._env_.preparedSearch, smartSearchOptions)
+    </script>
+    <script src='search.js'></script>
+    <script src="https://kit.fontawesome.com/30dafb542f.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="grid-container">
+        <div class="top-row">
+            <h1 class="title"><a href="../index.html">haupia<span class="haupia-dot">.</span>js</a></h1>
+        </div>
+        <div class="filter-elements-bar">
+            <div id="facets-language"></div>
+            <div id="facets-names"></div>
+        </div>        
+        <div class="grid-center-cell">
+            <div id="search-bar-wrapper">
+                <form action="/search/" onsubmit="submit(event)" id="search-form">
+                    <input required type="search" name="query" id="search-bar" size="25" autocomplete="off">
+                    <input type="submit" style="display: none;"><em class="fas fa-search search-button"
+                        onclick="submit(event)"></em>
+                </form>
+            </div>
+            <div id="did-you-mean">
+                <!-- Will contain the 'Did you mean' suggestions. -->
+            </div>
+        </div>
+        <div class="grid-center-cell pagination">
+            <!-- Will contain pagination buttons. -->
+        </div>
+        <div class="search-results grid-center-cell">
+            <!-- Will contain the search results. -->
+        </div>
+    </div>
+</body>
+
+</html>

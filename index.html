@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>SmartSearch</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="https://fonts.googleapis.com/css?family=Assistant|Orbitron:600&display=swap" rel="stylesheet">
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='./config/env.js'></script>
+    <script src='lib/smartsearch.bundle.js'></script>
+    <script>
+        const smartSearchOptions = {
+            autocompleteOptions: {
+                highlight: true,
+                language: "en",
+                prefixThreshold: 3
+            }
+        }
+        const fsss = new SmartSearch(window._env_.smartsearchURL, window._env_.preparedSearch, smartSearchOptions)
+    </script>
+    <script src='main.js' ></script>
+    <script src="https://kit.fontawesome.com/30dafb542f.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="top-row">
+            <h1 class="title"><a href="#">Homepage</a></h1>
+        </div>
+        <div class="grid-center-cell">
+            <div id="search-bar-wrapper">
+                <form action="/search/" onsubmit="submit(event)" id="search-form">
+                    <input required type="search" name="query" id="search-bar" size="25" autocomplete="off">
+                    <input type="submit" style="display: none;"><em class="fas fa-search search-button" onclick="submit(event)"></em>
+                </form>
+            </div>
+        </div>
+        <div class="grid-center-cell article">
+            <a href="#">
+                <div class="article">
+                    <img src="http://placehold.it/256" width="256" height="256" alt="placeholder">
+                    <h3>Headline</h3>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ...</p>
+                </div>
+            </a>
+        </div>
+        <div class="grid-center-cell article">
+            <a href="#">
+                <div class="article">
+                    <img src="http://placehold.it/256" width="256" height="256" alt="placeholder">
+                    <h3>Headline</h3>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ...</p>
+                </div>
+            </a>
+        </div>
+        <div class="grid-center-cell article">
+            <a href="#">
+                <div class="article">
+                    <img src="http://placehold.it/256" width="256" height="256" alt="placeholder">
+                    <h3>Headline</h3>
+                    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ...</p>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</body>
+</html>
