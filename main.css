@@ -192,3 +192,14 @@ strong {
     padding-right: 5px;
 }
 
+.date {
+    font-style: italic;
+}
+.language {
+    background-color: #9e2862;
+    padding: 0.25rem;
+    border-radius: 25%;
+    color: white;
+    font-weight: 600;
+    margin-left: 2rem;
+}

@@ -5,6 +5,17 @@ const facetMap = new Map()
 facetMap.set("mime_type", "Filetype")
 facetMap.set("category", "Category")
 
+const searchResultTemplate = (data, highlighting) => {
+    const language = data.language_facet_string[0]
+    return `
+    <a href="${data.link}">
+        <h1>${data.title}</h1>
+        <p>${highlighting.content}</p>
+        <span class="date">${new Date(data.sort_date).toLocaleDateString(language)}</span> <span class="language">${language}</span>
+    </a>
+`
+}
+
 function submit(event) {
     event.preventDefault()
     if (searchbar.value) {
@@ -21,7 +32,7 @@ window.onload = async () => {
     const queryTerm = urlParams.get("query")
     const page = await search(queryTerm)
 
-    if (page.facets) {
+    if (page && page.facets) {
         // renderFacet(
         //     page.facets.find(facet => facet.name.includes("language")).setDisplayName("Sprache"),
         //     document.getElementById("facets-language")
@@ -60,6 +71,7 @@ function renderSearchResults(page){
     const paginationWrapper = document.getElementsByClassName("pagination")[0]
     paginationWrapper.innerHTML = ""
     const pageRenderer = fsss.getPageRenderer(page)
+    pageRenderer.searchResultTemplate.templateFunction = searchResultTemplate
     pageRenderer.renderPaginationToHTMLElement(paginationWrapper, 5)
     linkPagination(page)
 
@@ -91,8 +103,9 @@ async function linkPagination(searchResultPage) {
 }
 
 function renderFacet(facet, container) {
+    console.log(facet)
     const headline = document.createElement("h3")
-    headline.innerText = facet.displayName
+    headline.innerText = facet.name
     const button = document.createElement("button")
     button.id = `${facet.displayName}-reset`
     button.innerText = "Reset"
@@ -114,6 +127,7 @@ function renderFacet(facet, container) {
         }
         container.append(div)
     })
+    container.append(getApplyFilterButton(facet))
 }
 
 async function filter(facet, reset) {
@@ -122,9 +136,20 @@ async function filter(facet, reset) {
         .filter(element => element.checked)
         .map(element => element.name)
 
+    const startDateValue = document.getElementById("start-date").value
+    const endDateValue = document.getElementById("end-date").value
     try {
-        if(reset) values = []
-        const page = await facet.filter(... values)
+        const startDate = startDateValue && new Date(startDateValue)
+        const endDate = endDateValue && new Date(endDateValue)
+        if(reset){
+            values = []
+        }
+        let page;
+        if(startDate && endDate){
+            page = await facet.customFilter(values, {sortDate: "desc"}, {fq:`sort_date:[${startDate.toISOString()} TO ${endDate.toISOString()}]`})
+        } else {
+            page = await facet.filter(...values)
+        }
 
         initFacetContainer(page)
         renderAllFacets(page, facetContainer)
@@ -138,7 +163,16 @@ async function filter(facet, reset) {
     }
 }
 
+function getApplyFilterButton(facet){
+    const applyFilterButton = document.createElement("button")
+    applyFilterButton.onclick = () => filter(facet)
+    applyFilterButton.innerHTML = "Apply filter"
+    return applyFilterButton
+}
+
 function renderAllFacets(page, container){
+    const dateFilterBox = document.getElementById("custom-date-filter")
+    dateFilterBox.style.display = ""
     page.facets.forEach((facet) => {
         const facetToRender = facet.setDisplayName(facetMap.get(facet.name))
         renderFacet(facetToRender, container)
