@@ -4,6 +4,7 @@ let facetContainer
 const facetMap = new Map()
 facetMap.set("mime_type", "Filetype")
 facetMap.set("category", "Category")
+facetMap.set("facet_filter_language", "Language")
 
 const searchResultTemplate = (data, highlighting) => {
     const language = data.language_facet_string[0]
@@ -146,10 +147,10 @@ async function filter(facet, reset) {
         }
         let page;
         if(startDate && endDate){
-            page = await facet.customFilter(values, {sortDate: "desc"}, {fq:`sort_date:[${startDate.toISOString()} TO ${endDate.toISOString()}]`})
-        } else {
-            page = await facet.filter(...values)
+            fsss.setCustomParams({sortDate: "desc"}, {fq:`sort_date:[${startDate.toISOString()} TO ${endDate.toISOString()}]`})
         }
+        page = await facet.filter(...values)
+
 
         initFacetContainer(page)
         renderAllFacets(page, facetContainer)
