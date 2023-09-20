@@ -7,7 +7,8 @@ facetMap.set("category", "Category")
 facetMap.set("facet_filter_language", "Language")
 
 const searchResultTemplate = (data, highlighting) => {
-    const language = data.language_facet_string[0]
+    const language = data.language_keyword[0] || "en"
+    console.log(highlighting)
     return `
     <a href="${data.link}">
         <h1>${data.title}</h1>
@@ -69,6 +70,8 @@ function initFacetContainer(page){
 }
 
 function renderSearchResults(page){
+    const renderedData = page.searchResults.map(result => console.log(result))
+    console.log(renderedData)
     const paginationWrapper = document.getElementsByClassName("pagination")[0]
     paginationWrapper.innerHTML = ""
     const pageRenderer = fsss.getPageRenderer(page)
@@ -130,24 +133,33 @@ function renderFacet(facet, container) {
     })
     container.append(getApplyFilterButton(facet))
 }
-
+function getCustomParameterInput(){
+    const inputName = document.getElementById("parameter-name").value
+    const inputValue = document.getElementById("parameter-value").value
+    let returnValue = null
+    if(inputName && inputValue){
+        returnValue = {[inputName]: inputValue}
+        console.log(`created parameter: {${inputName}:${inputValue}}`)
+    }
+    return returnValue
+}
 async function filter(facet, reset) {
     let values = Array.from(document.getElementsByClassName("facet-value"))
         .map(element => element.firstElementChild)
         .filter(element => element.checked)
         .map(element => element.name)
 
-    const startDateValue = document.getElementById("start-date").value
-    const endDateValue = document.getElementById("end-date").value
+    const customParameter = getCustomParameterInput()
+
     try {
-        const startDate = startDateValue && new Date(startDateValue)
-        const endDate = endDateValue && new Date(endDateValue)
+
         if(reset){
             values = []
         }
         let page;
-        if(startDate && endDate){
-            fsss.setCustomParams({sortDate: "desc"}, {fq:`sort_date:[${startDate.toISOString()} TO ${endDate.toISOString()}]`})
+
+        if(customParameter){
+            fsss.setCustomParams(customParameter)
         }
         page = await facet.filter(...values)
 
@@ -172,8 +184,7 @@ function getApplyFilterButton(facet){
 }
 
 function renderAllFacets(page, container){
-    const dateFilterBox = document.getElementById("custom-date-filter")
-    dateFilterBox.style.display = ""
+    document.getElementById("custom-parameter-input").style.display = ""
     page.facets.forEach((facet) => {
         const facetToRender = facet.setDisplayName(facetMap.get(facet.name))
         renderFacet(facetToRender, container)
